@@ -7,8 +7,8 @@
 Snake::Snake(Game &game) :
     game(game),
     head(QPointF(0, 0),NoDirection),
-    skin(10),
-    growing(7),
+    skin(init_skin_size),
+    growing(init_size),
     speed(game.Diffculty()),
     direction(NoDirection),
     lastdirection(NoDirection)
@@ -68,10 +68,10 @@ void Snake::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
 
 void Snake::setMoveDirection(Direction dir)
 {
-    if(direction==Left&&dir==Right) return;
-    else if(direction==Right&&dir==Left) return;
-    else if(direction==Up&&dir==Down) return;
-    else if(direction==Down&&dir==Up) return;
+    if(lastdirection==Left&&dir==Right) return;
+    else if(lastdirection==Right&&dir==Left) return;
+    else if(lastdirection==Up&&dir==Down) return;
+    else if(lastdirection==Down&&dir==Up) return;
     direction = dir;
 }
 
@@ -114,9 +114,9 @@ void Snake::advance(int step)
         if (direction == NoDirection) {
             return;
         }
-
         SnakeNode Lasthead=head;
-        head.setDirection(direction);
+        head.setDirection(NowDir);
+        setLastDirection(NowDir);
         //头
         switch (NowDir) {
             case Left:

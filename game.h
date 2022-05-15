@@ -24,15 +24,13 @@ public:
     void snakeAteItself(Snake *snake);
     //游戏操作事件
     void ChangeGameState();
-    void StopGame();
-    void ResumeGame();
     void SetDiffculty(int diffculty);
     //自身属性
     int Diffculty();
 
 public slots:
-    void pause();
-    void resume();
+    void StopGame();
+    void ResumeGame();
     void gameOver();
 
 protected:

@@ -104,14 +104,14 @@ void Game::ChangeGameState()
 void Game::StopGame()
 {
     run=false;
-    pause();
+    disconnect(&timer, SIGNAL(timeout()),&scene, SLOT(advance()));
     GameStateChange();
 }
 
 void Game::ResumeGame()
 {
     run=true;
-    resume();
+    connect(&timer, SIGNAL(timeout()),&scene, SLOT(advance()));
     GameStateChange();
 }
 
@@ -157,8 +157,10 @@ void Game::gameOver()
 {
     score=0;
     StopGame();
-    QTimer::singleShot(1000, this, SLOT(ResumeGame()));
-    QTimer::singleShot(1000,this,[this](){
+    //断开键盘连接
+    scene.removeEventFilter(this);
+
+    QTimer::singleShot(GameOverTime,this,[this](){
         //恢复场景
         scene.clear();
         snake = new Snake(*this);
@@ -168,20 +170,10 @@ void Game::gameOver()
 
         //恢复游戏状态
         ResumeGame();
+        //重连键盘输入
+        scene.installEventFilter(this);
     });
 
-}
-
-void Game::pause()
-{
-    disconnect(&timer, SIGNAL(timeout()),
-               &scene, SLOT(advance()));
-}
-
-void Game::resume()
-{
-    connect(&timer, SIGNAL(timeout()),
-            &scene, SLOT(advance()));
 }
 
 bool Game::eventFilter(QObject *object, QEvent *event)
